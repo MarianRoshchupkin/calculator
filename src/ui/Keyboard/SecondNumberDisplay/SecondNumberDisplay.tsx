@@ -1,6 +1,6 @@
 import React from "react";
-import {Styles} from './styles';
 import {Text} from "react-native";
+import {Styles} from './styles';
 
 type TProps = {
   secondNumber: string;

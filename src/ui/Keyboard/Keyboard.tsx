@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import { Styles } from './styles';
-import { View } from "react-native";
-import Display from "./Display/Display";
+import React, {useState} from "react";
+import {saveCalculation} from "../../utils/saveCalculation";
 import ButtonRow from "./ButtonRow/ButtonRow";
+import {Timestamp} from "firebase/firestore";
+import Display from "./Display/Display";
+import {Styles } from './styles';
+import {View} from "react-native";
 
 export default function Keyboard() {
   const [firstNumber, setFirstNumber] = useState<string>("");
@@ -57,7 +59,7 @@ export default function Keyboard() {
     setResult(null);
   };
 
-  const getResult = () => {
+  const getResult = async () => {
     const num1 = parseFloat(secondNumber);
     const num2 = parseFloat(firstNumber);
 
@@ -94,6 +96,16 @@ export default function Keyboard() {
     setSecondNumber("");
     setOperation("");
     setResult(null);
+
+    const calculation = {
+      firstNumber: num1.toString(),
+      secondNumber: num2.toString(),
+      operation: operation,
+      result: computedResult,
+      timestamp: Timestamp.now(),
+    };
+
+    await saveCalculation(calculation);
   };
 
   return (

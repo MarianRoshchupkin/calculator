@@ -9,18 +9,21 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "expo": "~51.0.28",
-    "expo-status-bar": "~1.12.1",
-    "react": "18.2.0",
-    "react-native": "0.74.5",
-    "redux": "^5.0.1"
+    "expo": "~52.0.7",
+    "expo-status-bar": "~2.0.0",
+    "firebase": "^11.0.2",
+    "react": "^18.3.1",
+    "react-native": "^0.76.2",
+    "react-native-modal": "^13.0.1",
+    "react-native-modalize": "^2.1.1",
+    "redux": "^5.0.1",
+    "typescript": "^5.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
-    "@types/react": "~18.2.45",
+    "@types/react": "~18.3.12",
     "@types/react-native": "^0.72.8",
-    "@types/redux": "^3.6.31",
-    "typescript": "^5.3.3"
+    "@types/redux": "^3.6.31"
   },
   "private": true
 }

@@ -1,7 +1,7 @@
 import React from "react";
-import {Styles} from './styles';
 import {Text} from "react-native";
 import {colors} from "../../../../global.styles";
+import {Styles} from './styles';
 
 type TProps = {
   firstNumber: string;
