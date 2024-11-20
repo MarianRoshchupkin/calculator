@@ -1,10 +1,11 @@
 import React, {useState} from "react";
+import {presentCalculationNotification} from "../../notification/NotificationHandler";
 import {saveCalculation} from "../../utils/saveCalculation";
 import ButtonRow from "./ButtonRow/ButtonRow";
 import {Timestamp} from "firebase/firestore";
+import {Alert, View} from "react-native";
 import Display from "./Display/Display";
-import {Styles } from './styles';
-import {View} from "react-native";
+import {Styles} from './styles';
 
 export default function Keyboard() {
   const [firstNumber, setFirstNumber] = useState<string>("");
@@ -83,6 +84,7 @@ export default function Keyboard() {
       case "/":
         if (num2 === 0) {
           clear();
+          Alert.alert("Error", "Division by zero is not allowed.");
           return;
         }
         computedResult = num1 / num2;
@@ -106,6 +108,8 @@ export default function Keyboard() {
     };
 
     await saveCalculation(calculation);
+
+    presentCalculationNotification(calculation);
   };
 
   return (
