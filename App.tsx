@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
-import { SafeAreaView, Alert } from 'react-native';
-import { requestNotificationPermissions, setupNotificationChannel, sendTestNotification } from './src/notification/NotificationHandler';
+import React, {useEffect, useRef} from 'react';
+import {SafeAreaView, Alert} from 'react-native';
+import {requestNotificationPermissions, setupNotificationChannel} from './src/notification/NotificationHandler';
 import * as Notifications from 'expo-notifications';
 import Keyboard from './src/ui/Keyboard/Keyboard';
-import { Styles } from "./global.styles";
+import {Styles} from "./global.styles";
 
 export default function App() {
   const notificationListener = useRef<any>();

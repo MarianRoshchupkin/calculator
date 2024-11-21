@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "betaCalculator",
-    "slug": "betaCalculator",
+    "name": "Calculator",
+    "slug": "calculator",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,7 +19,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.marian.betaCalculator"
+      "bundleIdentifier": "com.marian.betaCalculator",
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "UIBackgroundModes": ["remote-notification"],
+        "NSUserNotificationUsageDescription": "This app uses notifications to alert you of new calculations."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -35,6 +42,11 @@
       "eas": {
         "projectId": "0f35c93e-8801-497b-9071-add0714b9a86"
       }
+    },
+    "notification": {
+      "iosDisplayInForeground": true,
+      "icon": "./assets/splash.png",
+      "color": "#ffffff"
     }
   }
 }
