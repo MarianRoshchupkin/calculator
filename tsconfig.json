@@ -1,0 +1,13 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "jsx": "react-native",
+    "moduleResolution": "node",
+  },
+  "include": [
+    "./src",
+    "definitions",
+    "declarations",
+    "react-native-canvas.d.ts"
+  ]
+}

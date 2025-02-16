@@ -1,0 +1,1 @@
+declare module 'src/definitiions/declarations/react-native-canvas';

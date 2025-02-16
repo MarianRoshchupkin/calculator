@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "SmartAndFit",
+    "slug": "smartAndFit",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/icon.png",
+    "splash": {
+      "image": "./src/assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.marian.smartAndFit",
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "UIBackgroundModes": ["remote-notification"],
+        "NSCameraUsageDescription": "This app uses the camera to capture images for analysis.",
+        "NSUserNotificationUsageDescription": "This app uses notifications to alert you of new calculations."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.marian.smartAndFit"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0f35c93e-8801-497b-9071-add0714b9a86"
+      }
+    }
+  }
+}
