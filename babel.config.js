@@ -1,6 +1,7 @@
-module.exports = function(api) {
-  api.cache(true);
-  return {
-    presets: ['babel-preset-expo'],
-  };
+module.exports = {
+  presets: ['module:metro-react-native-babel-preset'],
+  plugins: [
+    ["@babel/plugin-transform-private-methods", { "loose": true }],
+    ["react-native-reanimated/plugin", { "globals": ["__MyFrameProcessorPlugin"] }]
+  ],
 };

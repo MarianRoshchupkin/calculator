@@ -1,1 +1,1 @@
-declare module 'src/definitiions/declarations/react-native-canvas';
+declare module 'src/definitions/declarations/react-native-canvas';

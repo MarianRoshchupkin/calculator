@@ -1,0 +1,1 @@
+declare function __MyFrameProcessorPlugin(frame: any): string | null;

@@ -1,11 +1,11 @@
-import {NativeModules} from 'react-native';
+import { NativeModules } from 'react-native';
 
-const {FrameConverter} = NativeModules;
+const { FrameProcessorPlugin } = NativeModules;
 console.log('All native modules:', NativeModules);
-console.log('FrameConverter:', NativeModules.FrameConverter);
+console.log('FrameProcessorPlugin:', FrameProcessorPlugin);
 
 export default {
-  convertFrame: (framePath: string): Promise<string> => {
-    return FrameConverter.convertFrame(framePath);
+  convertFrame: (frame: any): Promise<string> => {
+    return FrameProcessorPlugin.call(frame, []);
   },
 };
