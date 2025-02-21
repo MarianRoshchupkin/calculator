@@ -1,25 +1,26 @@
-import React, {useState, useRef, useCallback, useEffect, useMemo} from 'react';
-import {Camera, useCameraDevices, useFrameProcessor, Frame, VisionCameraProxy} from 'react-native-vision-camera';
-import {View, Text, StyleSheet, ActivityIndicator, Dimensions} from 'react-native';
-import {Worklets} from 'react-native-worklets-core';
+import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
+import {Camera, useCameraDevices, useFrameProcessor, Frame, VisionCameraProxy } from 'react-native-vision-camera';
+import { View, Text, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
 import Canvas from 'react-native-canvas';
+import { Worklets } from 'react-native-worklets-core';
+
+const CAPTURE_WIDTH = 1920;
+const CAPTURE_HEIGHT = 1080;
 
 const plugin = VisionCameraProxy.initFrameProcessorPlugin('MyFrameProcessorPlugin', {});
 
 export function processFrame(frame: Frame): string {
   'worklet';
-
   if (!plugin) {
     throw new Error('Frame Processor Plugin "MyFrameProcessorPlugin" not found!');
   }
-
   return String(plugin.call(frame));
 }
 
 export default function CameraScreen() {
   const [hasPermission, setHasPermission] = useState(false);
   const devices = useCameraDevices();
-  const device = devices.find((d) => d.position === 'front');
+  const device = devices.find(d => d.position === 'front');
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const ws = useRef<WebSocket | null>(null);
   const frameBuffer = useRef<string[]>([]);
@@ -36,31 +37,25 @@ export default function CameraScreen() {
 
   useEffect(() => {
     if (!hasPermission) return;
-
     ws.current = new WebSocket('wss://rutube.space/ws');
-
     ws.current.onopen = () => {
       console.log('WebSocket connected!');
     };
-
     ws.current.onclose = () => {
       console.log('WebSocket closed');
     };
-
     ws.current.onerror = (err) => {
-      console.log('WebSocket error:', err);
+      console.error('WebSocket error:', err);
     };
-
     ws.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         setAnalysisResult(data);
-        console.log(data);
+        console.log('Server data:', data);
       } catch (err) {
         console.error('Error parsing server message:', err);
       }
     };
-
     return () => {
       ws.current?.close();
       ws.current = null;
@@ -69,17 +64,18 @@ export default function CameraScreen() {
 
   useEffect(() => {
     if (!hasPermission) return;
-
     const interval = setInterval(() => {
-      if (ws.current && ws.current.readyState === WebSocket.OPEN && frameBuffer.current.length > 0) {
+      if (
+        ws.current &&
+        ws.current.readyState === WebSocket.OPEN &&
+        frameBuffer.current.length > 0
+      ) {
         const frameToSend = frameBuffer.current.shift();
-
         if (frameToSend) {
           ws.current.send(frameToSend);
         }
       }
     }, 1000);
-
     return () => clearInterval(interval);
   }, [hasPermission]);
 
@@ -94,19 +90,38 @@ export default function CameraScreen() {
     canvasRef.current = canvas;
     canvas.width = width;
     canvas.height = height;
+    console.log('Canvas dimensions:', canvas.width, canvas.height);
     drawPoints(canvas);
   };
 
   const drawPoints = (canvas: any) => {
     const ctx = canvas.getContext('2d');
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    let effectiveWidth = CAPTURE_HEIGHT;
+    let effectiveHeight = CAPTURE_WIDTH;
+
+    const scaleX = canvas.width / effectiveWidth;
+    const scaleY = canvas.height / effectiveHeight;
+    console.log('Effective scale factors:', scaleX, scaleY);
+
     if (analysisResult && Array.isArray(analysisResult.keypoints)) {
-      analysisResult.keypoints.forEach((pt: { x: number; y: number; score: number }) => {
+      analysisResult.keypoints.forEach((pt: { x: number; y: number; score: number } | null) => {
         if (pt && pt.score > 0.5) {
+          const rotatedX = pt.y;
+          const rotatedY = CAPTURE_WIDTH - pt.x;
+          let finalX, finalY;
+
+          if (canvas.width < canvas.height) {
+            finalX = rotatedX * scaleX;
+            finalY = canvas.height - (rotatedY * scaleY);
+          } else {
+            finalX = canvas.width - (rotatedX * scaleX);
+            finalY = rotatedY * scaleY;
+          }
+
           ctx.beginPath();
-          ctx.arc(pt.x, pt.y, 5, 0, 2 * Math.PI);
+          ctx.arc(finalX, finalY, 5, 0, 2 * Math.PI);
           ctx.fillStyle = 'red';
           ctx.fill();
         }
@@ -116,7 +131,6 @@ export default function CameraScreen() {
 
   const onFrame = useCallback((base64: string | null) => {
     if (!base64) return;
-
     if (frameBuffer.current.length < bufferMaxSize) {
       frameBuffer.current.push(base64);
     }
@@ -155,5 +169,5 @@ export default function CameraScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   message: { textAlign: 'center', paddingBottom: 10 },
-  canvas: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }
+  canvas: { position: 'absolute', top: 0, left: 0, width: Dimensions.get('window').width, height: Dimensions.get('window').height },
 });
