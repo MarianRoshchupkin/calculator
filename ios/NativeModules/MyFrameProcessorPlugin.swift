@@ -34,7 +34,7 @@ public class MyFrameProcessorPlugin: FrameProcessorPlugin {
 
 func UIImageFromCVPixelBuffer(_ pixelBuffer: CVPixelBuffer) -> UIImage? {
   let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-  let context = CIContext(options: nil)
+  let context = MetalHelper.shared.ciContext
 
   guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else {
     return nil

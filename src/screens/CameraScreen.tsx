@@ -1,8 +1,8 @@
-import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
-import {Camera, useCameraDevices, useFrameProcessor, Frame, VisionCameraProxy } from 'react-native-vision-camera';
-import { View, Text, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
+import React, {useState, useRef, useCallback, useEffect, useMemo} from 'react';
+import {Camera, useCameraDevices, useFrameProcessor, Frame, VisionCameraProxy} from 'react-native-vision-camera';
+import {View, Text, StyleSheet, ActivityIndicator, Dimensions} from 'react-native';
+import {Worklets} from 'react-native-worklets-core';
 import Canvas from 'react-native-canvas';
-import { Worklets } from 'react-native-worklets-core';
 
 const CAPTURE_WIDTH = 1920;
 const CAPTURE_HEIGHT = 1080;
@@ -18,15 +18,16 @@ export function processFrame(frame: Frame): string {
 }
 
 export default function CameraScreen() {
-  const [hasPermission, setHasPermission] = useState(false);
   const devices = useCameraDevices();
   const device = devices.find(d => d.position === 'front');
-  const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [filteredKeypoints, setFilteredKeypoints] = useState<any[]>([]);
   const ws = useRef<WebSocket | null>(null);
   const frameBuffer = useRef<string[]>([]);
-  const bufferMaxSize = 5;
+  const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [hasPermission, setHasPermission] = useState(false);
   const canvasRef = useRef<any>(null);
   const { width, height } = Dimensions.get('window');
+  const bufferMaxSize = 5;
 
   useEffect(() => {
     (async () => {
@@ -37,25 +38,18 @@ export default function CameraScreen() {
 
   useEffect(() => {
     if (!hasPermission) return;
+
     ws.current = new WebSocket('wss://rutube.space/ws');
-    ws.current.onopen = () => {
-      console.log('WebSocket connected!');
-    };
-    ws.current.onclose = () => {
-      console.log('WebSocket closed');
-    };
-    ws.current.onerror = (err) => {
-      console.error('WebSocket error:', err);
-    };
+
     ws.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         setAnalysisResult(data);
-        console.log('Server data:', data);
       } catch (err) {
         console.error('Error parsing server message:', err);
       }
     };
+
     return () => {
       ws.current?.close();
       ws.current = null;
@@ -64,6 +58,7 @@ export default function CameraScreen() {
 
   useEffect(() => {
     if (!hasPermission) return;
+
     const interval = setInterval(() => {
       if (
         ws.current &&
@@ -71,31 +66,59 @@ export default function CameraScreen() {
         frameBuffer.current.length > 0
       ) {
         const frameToSend = frameBuffer.current.shift();
+
         if (frameToSend) {
           ws.current.send(frameToSend);
         }
       }
-    }, 1000);
+    }, 200);
+
     return () => clearInterval(interval);
   }, [hasPermission]);
 
   useEffect(() => {
-    if (canvasRef.current && analysisResult) {
-      drawPoints(canvasRef.current);
+    if (analysisResult && Array.isArray(analysisResult.keypoints)) {
+      setFilteredKeypoints(prev => {
+        const alpha = 0.5;
+
+        if (!prev || prev.length !== analysisResult.keypoints.length) {
+          return analysisResult.keypoints;
+        }
+
+        return analysisResult.keypoints.map((pt: { x: number; y: number; score: number } | null, i: number) => {
+          if (!pt) return null;
+
+          const prevPt = prev[i] || pt;
+
+          return {
+            x: alpha * pt.x + (1 - alpha) * prevPt.x,
+            y: alpha * pt.y + (1 - alpha) * prevPt.y,
+            score: pt.score
+          };
+        });
+      });
     }
   }, [analysisResult]);
 
+  useEffect(() => {
+    if (canvasRef.current && filteredKeypoints.length > 0) {
+      drawPoints(canvasRef.current);
+    }
+  }, [filteredKeypoints]);
+
   const handleCanvas = (canvas: any) => {
     if (!canvas) return;
+
     canvasRef.current = canvas;
     canvas.width = width;
     canvas.height = height;
-    console.log('Canvas dimensions:', canvas.width, canvas.height);
+
     drawPoints(canvas);
   };
 
   const drawPoints = (canvas: any) => {
     const ctx = canvas.getContext('2d');
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     let effectiveWidth = CAPTURE_HEIGHT;
@@ -103,10 +126,9 @@ export default function CameraScreen() {
 
     const scaleX = canvas.width / effectiveWidth;
     const scaleY = canvas.height / effectiveHeight;
-    console.log('Effective scale factors:', scaleX, scaleY);
 
-    if (analysisResult && Array.isArray(analysisResult.keypoints)) {
-      analysisResult.keypoints.forEach((pt: { x: number; y: number; score: number } | null) => {
+    if (filteredKeypoints && filteredKeypoints.length > 0) {
+      filteredKeypoints.forEach((pt: { x: number; y: number; score: number } | null) => {
         if (pt && pt.score > 0.5) {
           const rotatedX = pt.y;
           const rotatedY = CAPTURE_WIDTH - pt.x;
@@ -131,9 +153,7 @@ export default function CameraScreen() {
 
   const onFrame = useCallback((base64: string | null) => {
     if (!base64) return;
-    if (frameBuffer.current.length < bufferMaxSize) {
-      frameBuffer.current.push(base64);
-    }
+    if (frameBuffer.current.length < bufferMaxSize) frameBuffer.current.push(base64);
   }, []);
 
   const onFrameJS = useMemo(() => Worklets.createRunOnJS(onFrame), [onFrame]);
