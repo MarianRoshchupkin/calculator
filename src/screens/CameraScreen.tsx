@@ -125,8 +125,9 @@ export default function CameraScreen() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
     ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate(Math.PI / 2);
+    ctx.rotate(Math.PI);
     ctx.translate(-canvas.width / 2, -canvas.height / 2);
+    ctx.translate(0, 50);
 
     const transformPoint = (pt: { x: number; y: number }) => {
       let x, y;
@@ -135,14 +136,14 @@ export default function CameraScreen() {
         const scaleX = canvas.width / CAPTURE_HEIGHT;
         const scaleY = canvas.height / CAPTURE_WIDTH;
 
-        x = pt.x * scaleX;
-        y = pt.y * scaleY;
+        x = pt.y * scaleX;
+        y = (CAPTURE_WIDTH - pt.x) * scaleY;
       } else {
         const scaleX = canvas.width / CAPTURE_WIDTH;
         const scaleY = canvas.height / CAPTURE_HEIGHT;
 
-        x = canvas.width - (pt.y * scaleX);
-        y = (CAPTURE_WIDTH - pt.x) * scaleY;
+        x = pt.x * scaleX;
+        y = pt.y * scaleY;
       }
 
       return { x, y };
