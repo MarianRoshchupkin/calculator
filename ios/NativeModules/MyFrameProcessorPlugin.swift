@@ -1,6 +1,7 @@
 import VisionCamera
 import AVFoundation
 import UIKit
+import VideoToolbox
 
 @objc(MyFrameProcessorPlugin)
 public class MyFrameProcessorPlugin: FrameProcessorPlugin {
@@ -12,7 +13,6 @@ public class MyFrameProcessorPlugin: FrameProcessorPlugin {
     guard let sampleBuffer = frame.buffer as? CMSampleBuffer else {
       return ""
     }
-
     guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
       return ""
     }
@@ -20,25 +20,12 @@ public class MyFrameProcessorPlugin: FrameProcessorPlugin {
     CVPixelBufferLockBaseAddress(pixelBuffer, .readOnly)
     defer { CVPixelBufferUnlockBaseAddress(pixelBuffer, .readOnly) }
 
-    guard let uiImage = UIImageFromCVPixelBuffer(pixelBuffer) else {
+    // Use our hardware-accelerated encoder to get JPEG data.
+    guard let encodedData = HardwareEncoder.shared.encode(pixelBuffer: pixelBuffer) else {
       return ""
     }
 
-    guard let jpegData = uiImage.jpegData(compressionQuality: 0.7) else {
-      return ""
-    }
-
-    return jpegData.base64EncodedString()
+    // Return the base64-encoded string (so the worklet’s return type stays simple).
+    return encodedData.base64EncodedString()
   }
-}
-
-func UIImageFromCVPixelBuffer(_ pixelBuffer: CVPixelBuffer) -> UIImage? {
-  let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-  let context = MetalHelper.shared.ciContext
-
-  guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else {
-    return nil
-  }
-
-  return UIImage(cgImage: cgImage)
 }

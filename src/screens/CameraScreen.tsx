@@ -7,26 +7,6 @@ import Canvas from 'react-native-canvas';
 const CAPTURE_WIDTH = 1920;
 const CAPTURE_HEIGHT = 1080;
 
-const keypointNames = [
-  "Nose",
-  "Left Eye",
-  "Right Eye",
-  "Left Ear",
-  "Right Ear",
-  "Left Shoulder",
-  "Right Shoulder",
-  "Left Elbow",
-  "Right Elbow",
-  "Left Wrist",
-  "Right Wrist",
-  "Left Hip",
-  "Right Hip",
-  "Left Knee",
-  "Right Knee",
-  "Left Ankle",
-  "Right Ankle"
-];
-
 const skeletonConnections = [
   [0, 1], [0, 2],
   [1, 3], [2, 4],
@@ -183,12 +163,6 @@ export default function CameraScreen() {
           ctx.lineWidth = 1;
           ctx.strokeStyle = "white";
           ctx.stroke();
-
-          if (keypointNames[index] !== undefined) {
-            ctx.font = "12px Arial";
-            ctx.fillStyle = "yellow";
-            ctx.fillText(keypointNames[index], x + 6, y - 6);
-          }
         }
       });
     }
