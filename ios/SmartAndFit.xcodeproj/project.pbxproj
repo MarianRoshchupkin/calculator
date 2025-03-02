@@ -12,7 +12,6 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		4C659A2674E74E29977798D5 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A0166DD6B74921B410C065 /* noop-file.swift */; };
-		8B3B4A9E2D6E01BB00E2223B /* MetalHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B3B4A9A2D6E01BB00E2223B /* MetalHelper.swift */; };
 		8B3B4A9F2D6E01BB00E2223B /* HardwareEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B3B4A992D6E01BB00E2223B /* HardwareEncoder.swift */; };
 		8B3B4AA02D6E01BB00E2223B /* MyFrameProcessorPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B3B4A9B2D6E01BB00E2223B /* MyFrameProcessorPlugin.m */; };
 		8B3B4AA12D6E01BB00E2223B /* MyFrameProcessorPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B3B4A9C2D6E01BB00E2223B /* MyFrameProcessorPlugin.swift */; };
@@ -35,7 +34,6 @@
 		6C2E3173556A471DD304B334 /* Pods-SmartAndFit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartAndFit.debug.xcconfig"; path = "Target Support Files/Pods-SmartAndFit/Pods-SmartAndFit.debug.xcconfig"; sourceTree = "<group>"; };
 		7A4D352CD337FB3A3BF06240 /* Pods-SmartAndFit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmartAndFit.release.xcconfig"; path = "Target Support Files/Pods-SmartAndFit/Pods-SmartAndFit.release.xcconfig"; sourceTree = "<group>"; };
 		8B3B4A992D6E01BB00E2223B /* HardwareEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardwareEncoder.swift; sourceTree = "<group>"; };
-		8B3B4A9A2D6E01BB00E2223B /* MetalHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalHelper.swift; sourceTree = "<group>"; };
 		8B3B4A9B2D6E01BB00E2223B /* MyFrameProcessorPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyFrameProcessorPlugin.m; sourceTree = "<group>"; };
 		8B3B4A9C2D6E01BB00E2223B /* MyFrameProcessorPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyFrameProcessorPlugin.swift; sourceTree = "<group>"; };
 		93A0166DD6B74921B410C065 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "SmartAndFit/noop-file.swift"; sourceTree = "<group>"; };
@@ -118,7 +116,6 @@
 			isa = PBXGroup;
 			children = (
 				8B3B4A992D6E01BB00E2223B /* HardwareEncoder.swift */,
-				8B3B4A9A2D6E01BB00E2223B /* MetalHelper.swift */,
 				8B3B4A9B2D6E01BB00E2223B /* MyFrameProcessorPlugin.m */,
 				8B3B4A9C2D6E01BB00E2223B /* MyFrameProcessorPlugin.swift */,
 			);
@@ -349,7 +346,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8B3B4A9E2D6E01BB00E2223B /* MetalHelper.swift in Sources */,
 				8B3B4A9F2D6E01BB00E2223B /* HardwareEncoder.swift in Sources */,
 				8B3B4AA02D6E01BB00E2223B /* MyFrameProcessorPlugin.m in Sources */,
 				8B3B4AA12D6E01BB00E2223B /* MyFrameProcessorPlugin.swift in Sources */,
